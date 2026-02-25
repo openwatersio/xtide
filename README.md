@@ -1,6 +1,6 @@
 # xtide Docker image
 
-Docker image for [XTide](https://flaterco.com/xtide/), a tide prediction program. Includes the `tide` CLI, `xttpd` web server, and `tcd-utils` (`build_tide_db`, `restore_tide_db`), compiled from source with harmonics data.
+Docker image for [XTide](https://flaterco.com/xtide/), a tide prediction program. Includes the `tide` CLI, `xttpd` web server, `tcd-utils` (`build_tide_db`, `restore_tide_db`), and `congen` (tidal constituent generator), compiled from source with harmonics data.
 
 ## Usage
 
@@ -29,6 +29,14 @@ Then open http://localhost:8080 in your browser.
 ```sh
 docker run --rm ghcr.io/openwatersio/xtide restore_tide_db -h
 docker run --rm ghcr.io/openwatersio/xtide build_tide_db -h
+```
+
+### congen
+
+Generate speeds, equilibrium arguments, and node factors for tidal constituents. The default input file is included at `/usr/local/share/congen_input.txt`.
+
+```sh
+docker run --rm ghcr.io/openwatersio/xtide congen < /usr/local/share/congen_input.txt
 ```
 
 ## Custom Harmonics File
