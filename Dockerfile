@@ -1,6 +1,7 @@
 ARG LIBTCD_VERSION=2.2.7-r3
 ARG XTIDE_VERSION=2.16
 ARG TCD_UTILS_VERSION=20240222
+ARG CONGEN_VERSION=1.7-r2
 ARG HARMONICS_VERSION=20251228
 
 # ---------------------------------------------------------------------------
@@ -11,6 +12,7 @@ FROM debian:bookworm-slim AS builder
 ARG LIBTCD_VERSION
 ARG XTIDE_VERSION
 ARG TCD_UTILS_VERSION
+ARG CONGEN_VERSION
 ARG HARMONICS_VERSION
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -35,6 +37,12 @@ RUN curl -fsSL "https://flaterco.com/files/xtide/tcd-utils-${TCD_UTILS_VERSION}.
   && cd tcd-utils-*/ \
   && ./configure && make && make install
 
+# congen (tarball dir strips release suffix, e.g. 1.7-r2 -> congen-1.7)
+RUN curl -fsSL "https://flaterco.com/files/xtide/congen-${CONGEN_VERSION}.tar.xz" | tar xJ \
+  && cd congen-*/ \
+  && ./configure && make && make install \
+  && curl -fsSL -o /usr/local/share/congen_input.txt "https://flaterco.com/files/xtide/congen_input.txt"
+
 # harmonics data (tarball dir omits -free suffix)
 RUN mkdir -p /usr/local/share/xtide \
   && curl -fsSL "https://flaterco.com/files/xtide/harmonics-dwf-${HARMONICS_VERSION}-free.tar.xz" | tar xJ \
@@ -46,10 +54,10 @@ RUN mkdir -p /usr/local/share/xtide \
 FROM debian:bookworm-slim
 
 LABEL org.opencontainers.image.title="XTide" \
-      org.opencontainers.image.description="Tide prediction software with CLI (tide), web server (xttpd), and tcd-utils" \
-      org.opencontainers.image.url="https://github.com/openwatersio/xtide-docker" \
-      org.opencontainers.image.source="https://github.com/openwatersio/xtide-docker" \
-      org.opencontainers.image.licenses="GPL-3.0-or-later"
+  org.opencontainers.image.description="Tide prediction software with CLI (tide), web server (xttpd), tcd-utils, and congen" \
+  org.opencontainers.image.url="https://github.com/openwatersio/xtide-docker" \
+  org.opencontainers.image.source="https://github.com/openwatersio/xtide-docker" \
+  org.opencontainers.image.licenses="GPL-3.0-or-later"
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
   libpng16-16 zlib1g \
