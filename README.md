@@ -73,3 +73,7 @@ Multi-arch: `linux/amd64` and `linux/arm64`.
 ```sh
 docker buildx build --platform linux/amd64 -t xtide .
 ```
+
+## License
+
+The Dockerfile and scripts in this repository are © Open Water Software, LLC and [MIT](LICENSE). The image they build contains [XTide](https://flaterco.com/xtide/), which is GPL-3.0, and the harmonics data from flaterco.com, which carries its own terms.
